@@ -1,40 +1,83 @@
 #include <stdio.h>
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+void title(char *text);
 
-int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+#define SIZE 10
+#define SHIP_LENGHT 3
+#define SHIP 2
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+int battlefield[SIZE][SIZE] = {0};
+char header[SIZE] = {'A','B','C','D','E','F','G','H','I','J'};
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+// Functions prototipes
+void print_ship_horizontal(int row, int column);
+void print_ship_vertical(int row, int column);
+void print_battlefield(void);
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
+int main(void)
+{   
+    int row;
+    int column;
+
+    title("START GAME");
+
+    printf("Row: ");
+    scanf("%i", &row);
+
+    printf("Column: ");
+    scanf("%i", &column);
+
+    print_ship_vertical(row, column);
     
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    print_battlefield();
 
     return 0;
+}
+
+void title(char *text)
+{
+    printf("\n");
+    printf("----------- %s ----------- \n", text);
+    printf("\n");
+}
+
+void print_ship_vertical(int row, int column)
+{
+    for (int i = 0; i < SHIP_LENGHT; i++)
+    {
+        battlefield[row + i][column] = SHIP;
+    }
+}
+
+void print_ship_horizontal(int row, int column)
+{
+    for (int i = 0; i < SHIP_LENGHT; i++)
+    {
+        battlefield[row][column + i] = SHIP;
+    }
+}
+
+void print_battlefield(void)
+{
+    // Header
+    printf("   ");
+    for (int i = 0; i < SIZE; i++)
+    {
+        printf("%c", header[i]);
+        printf(" ");
+    }
+    printf("\n");
+
+    for (int i = 0; i < SIZE; i++)
+    {
+        // Rows numbers
+        printf("%i", i);
+        printf("  ");
+        for (int j = 0; j < SIZE; j++)
+        {
+            printf("%i", battlefield[i][j]);
+            printf(" ");
+        }
+        printf("\n");
+    }
 }
