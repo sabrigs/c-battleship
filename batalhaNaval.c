@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void title(char *text);
-
+// Global variables
 #define SIZE 10
 #define SHIP_LENGHT 3
 #define SHIP 2
 #define SHIPS 4
 
+// Arrays
 int battlefield[SIZE][SIZE] = {0};
 char header[SIZE] = {'A','B','C','D','E','F','G','H','I','J'};
 
@@ -17,21 +17,22 @@ int print_ship_vertical(int row, int column);
 int print_ship_diagonal1(int row, int column);
 int print_ship_diagonal2(int row, int column);
 void print_battlefield(void);
-bool check(int row, int column);
+void title(char *text);
 
 int main(void)
 {  
+    // Conditional for add new ships
     char add = 'y';
 
+    // Starting game
     title("START GAME");
 
     // Print battlefiel
     print_battlefield();
 
+    // Loop for add ships
     do
     {
-        
-        
         // Ask for user to choose a position
         title("CHOOSE THE SHIP POSITION");
         printf("Write the row and column of the START of each ship.\n");
@@ -46,16 +47,16 @@ int main(void)
         scanf("%i", &column);
 
         // Menu
-        int menu;
+        int output;
         printf("\n");
         printf("[1] Horizontaly\n");
         printf("[2] Verticaly\n");
         printf("[3] Diagonaly (main)\n");
         printf("[4] Diagonaly (second)\n");
         printf("How to display on battlefield? ");
-        scanf("%i", &menu);
+        scanf("%i", &output);
 
-        switch (menu)
+        switch (output)
         {
         case 1:
             // Horizontal
