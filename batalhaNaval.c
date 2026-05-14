@@ -16,6 +16,8 @@ int print_ship_horizontal(int row, int column);
 int print_ship_vertical(int row, int column);
 int print_ship_diagonal1(int row, int column);
 int print_ship_diagonal2(int row, int column);
+void print_cruz(int row, int column);
+void print_cone(int row, int column);
 void print_battlefield(void);
 void title(char *text);
 
@@ -236,5 +238,53 @@ void print_battlefield(void)
             printf(" ");
         }
         printf("\n");
+    }
+}
+
+void print_cone(int row, int column)
+{
+    // Ponto central
+    battlefield[row][column] = SHIP;
+
+    // Segunda linha
+    for(int i = 0; i < 3; i++)
+    {
+        battlefield[row + 1][(column - 1) + i] = SHIP;
+    }
+
+    // Terceira linha
+    for(int i = 0; i < 5; i++)
+    {
+        battlefield[row + 2][(column - 2) + i] = SHIP;
+    }
+}
+
+void print_cruz(int row, int column)
+{
+    // Linha vertical
+    for(int i = 0; i < 3; i++)
+    {
+        battlefield[(row - 1) + i][column] = SHIP;
+    }
+
+    // Linha horizontal
+    for(int i = 0; i < 5; i++)
+    {
+        battlefield[row][(column - 2) + i] = SHIP;
+    }
+}
+
+void print_octedro(int row, int column)
+{
+    // Linha vertical
+    for(int i = 0; i < 3; i++)
+    {
+        battlefield[(row - 1) + i][column] = SHIP;
+    }
+
+    // Linha horizontal
+    for(int i = 0; i < 3; i++)
+    {
+        battlefield[row][(column - 1) + i] = SHIP;
     }
 }
