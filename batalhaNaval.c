@@ -1,25 +1,34 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// Global variables
-#define SIZE 10
+// GLOBAL VARIABLES
+
+// Settings
+#define SIZE 10 // Array size
 #define SHIP_LENGHT 3
-#define SHIP 2
-#define SHIPS 4
+#define HEIGHT_DIAMOND 3
+#define HEIGHT_CONE 3
+#define HEIGHT_DAGGER 3
 
-// Arrays
-int battlefield[SIZE][SIZE] = {0};
-char header[SIZE] = {'A','B','C','D','E','F','G','H','I','J'};
+// Battlefield prints
+#define SHIP 3
+#define OCEAN 0
+#define POWER 5
+#define BUSY 1 // Ship and power overlay
 
-// Functions prototipes
+// Array
+int battlefield[SIZE][SIZE] = {OCEAN};
+
+// FUNCTIONS PROTOTYPIES
+void title(char *text);
+void print_battlefield(void);
 int print_ship_horizontal(int row, int column);
 int print_ship_vertical(int row, int column);
 int print_ship_diagonal1(int row, int column);
 int print_ship_diagonal2(int row, int column);
-void print_cruz(int row, int column);
-void print_cone(int row, int column);
-void print_battlefield(void);
-void title(char *text);
+int print_dagger(int row, int column);
+int print_cone(int row, int column);
+int print_diamond(int row, int column);
 
 int main(void)
 {  
@@ -27,7 +36,7 @@ int main(void)
     char add = 'y';
 
     // Starting game
-    title("START GAME");
+    title("START GAME"); 
 
     // Print battlefiel
     print_battlefield();
@@ -42,11 +51,17 @@ int main(void)
         int row = 0;
         int column = 0;
 
-        printf("Row: ");
-        scanf("%i", &row);
-
-        printf("Column: ");
-        scanf("%i", &column);
+        do
+        {
+            printf("Row (0-9): ");
+            scanf("%i", &row);
+        } while (row >= SIZE || row < 0);
+        
+        do
+        {
+            printf("Column (0-9): ");
+            scanf("%i", &column);
+        } while (column > SIZE || column < 0);
 
         // Menu
         int output;
@@ -80,15 +95,18 @@ int main(void)
             printf("Invalid option.\n");
             break;
         }    
-
-        title("BATTLEFIELD");
-        print_battlefield();
-
         printf("\n");
         printf("Add more ships [y/n]? ");
         scanf(" %c", &add);
     }
     while (add == 'Y' || add == 'y');
+
+    title("RESULT");
+
+    print_dagger(1, 2);
+    print_cone(6, 2);
+    print_diamond(1, 8);
+    print_battlefield();
     
     return 0;
 }
@@ -100,52 +118,66 @@ void title(char *text)
     printf("\n");
 }
 
+void print_battlefield(void)
+{
+    // Header
+    printf("  ");
+    for (int i = 0; i < SIZE; i++)
+    {
+        printf("%i ", i);
+    }
+    printf("\n");
+
+    for (int i = 0; i < SIZE; i++)
+    {
+        // Rows numbers
+        printf("%i ", i);
+        
+        for (int j = 0; j < SIZE; j++)
+        {
+            printf("%i ", battlefield[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int print_ship_vertical(int row, int column)
 {
-    // Check
-    for(int i = 0; i < SHIP_LENGHT; i++)
+    for (int i = 0; i < SHIP_LENGHT; i++)
     {
-        int temp_row = row + 1;
-        int temp_column = column;
+        int temp_row = row + i;
 
-        // Check battlefield limits
-        if (temp_row >= SIZE || temp_column >= SIZE)
+        if (temp_row >= SIZE || temp_row < 0 || column >= SIZE || column < 0)
         {
             printf("Out of battlefield limits.\n");
             return 1;
         }
-
-        // Check if position is free
-        if (battlefield[temp_row][temp_column] != 0)
+        if (battlefield[temp_row][column] != 0)
         {
             printf("This position is not free.\n");
             return 1;
         }
     }
-
+    
     for (int i = 0; i < SHIP_LENGHT; i++)
     {
         battlefield[row + i][column] = SHIP;
     }
+    return 0;
 }
 
 int print_ship_horizontal(int row, int column)
 {
-    // Check
-    for(int i = 0; i < SHIP_LENGHT; i++)
+    for (int i = 0; i < SHIP_LENGHT; i++)
     {
-        int temp_row = row;
         int temp_column = column + i;
 
-        // Check battlefield limits
-        if (temp_row >= SIZE || temp_column >= SIZE)
+        if (row >= SIZE || row < 0 || temp_column >= SIZE || temp_column < 0 )
         {
             printf("Out of battlefield limits.\n");
             return 1;
         }
-
-        // Check if position is free
-        if (battlefield[temp_row][temp_column] != 0)
+        if (battlefield[row][temp_column] != 0)
         {
             printf("This position is not free.\n");
             return 1;
@@ -156,24 +188,21 @@ int print_ship_horizontal(int row, int column)
     {
         battlefield[row][column + i] = SHIP;
     }
+    return 0;
 }
 
 int print_ship_diagonal1(int row, int column)
 {
-    // Check
-    for(int i = 0; i < SHIP_LENGHT; i++)
+    for (int i = 0; i < SHIP_LENGHT; i++)
     {
         int temp_row = row + i;
         int temp_column = column + i;
 
-        // Check battlefield limits
-        if (temp_row >= SIZE || temp_column >= SIZE)
+        if (temp_row >= SIZE || temp_row < 0 || temp_column >= SIZE || temp_column < 0)
         {
             printf("Out of battlefield limits.\n");
             return 1;
         }
-
-        // Check if position is free
         if (battlefield[temp_row][temp_column] != 0)
         {
             printf("This position is not free.\n");
@@ -185,106 +214,164 @@ int print_ship_diagonal1(int row, int column)
     {
         battlefield[row + i][column + i] = SHIP;
     }
+    return 0;
 }
 
 int print_ship_diagonal2(int row, int column)
 {
-    // Check
-    for(int i = 0; i < SHIP_LENGHT; i++)
+    for (int i = 0; i < SHIP_LENGHT; i++)
     {
         int temp_row = row + i;
         int temp_column = column - i;
 
-        // Check battlefield limits
-        if (temp_row >= SIZE || temp_column >= SIZE)
+        if (temp_row >= SIZE || temp_row < 0 || temp_column >= SIZE || temp_column < 0)
         {
             printf("Out of battlefield limits.\n");
             return 1;
         }
-
-        // Check if position is free
         if (battlefield[temp_row][temp_column] != 0)
         {
             printf("This position is not free.\n");
             return 1;
         }
     }
-    
+
     for (int i = 0; i < SHIP_LENGHT; i++)
     {
         battlefield[row + i][column - i] = SHIP;
     }
+    return 0;
 }
 
-void print_battlefield(void)
+int print_cone(int row, int column)
 {
-    // Header
-    printf("   ");
-    for (int i = 0; i < SIZE; i++)
-    {
-        printf("%c", header[i]);
-        printf(" ");
-    }
-    printf("\n");
-
-    for (int i = 0; i < SIZE; i++)
-    {
-        // Rows numbers
-        printf("%i", i);
-        printf("  ");
-        for (int j = 0; j < SIZE; j++)
+    // Rows
+    for(int r = 0; r < HEIGHT_CONE; r++)
+    {   
+        // Columns
+        for(int c = -r; c <= r; c++)
         {
-            printf("%i", battlefield[i][j]);
-            printf(" ");
+            int temp_row = row + r;
+            int temp_column = column + c;
+
+            if (temp_row >= SIZE || temp_column < 0 || temp_column >= SIZE || temp_column < 0)
+            {
+                printf("Out of battlefield limits.\n");
+                return 1;
+            }
+            if (battlefield[temp_row][temp_column] == SHIP)
+            {
+                battlefield[row + r][column + c] = BUSY;
+            }
+            else
+            {
+                battlefield[row + r][column + c] = POWER;
+            }
         }
-        printf("\n");
     }
+    return 0;
 }
 
-void print_cone(int row, int column)
+int print_dagger(int row, int column)
 {
-    // Ponto central
-    battlefield[row][column] = SHIP;
+    for(int r = 0; r < HEIGHT_DAGGER; r++)
+    {  
+        // Find the middle
+        if (r == HEIGHT_DAGGER/2)
+        {
+            for(int c = -2; c <= 2; c++)
+            {
+                int temp_row = row + r;
+                int temp_column = column + c;
 
-    // Segunda linha
-    for(int i = 0; i < 3; i++)
-    {
-        battlefield[row + 1][(column - 1) + i] = SHIP;
-    }
+                if (temp_row >= SIZE || temp_row < 0 || temp_column >= SIZE || temp_column < 0)
+                {
+                    printf("Out of battlefield limits.\n");
+                    return 1;
+                }
+                if (battlefield[temp_row][temp_column] == SHIP)
+                {
+                    battlefield[row + r][column + c] = BUSY;
+                }
+                // Print
+                else
+                {
+                    battlefield[row + r][column + c] = POWER;
+                }
+            }
+        }
+        // If it's not the middle
+        else
+        {   
+            int temp_row = row + r;
 
-    // Terceira linha
-    for(int i = 0; i < 5; i++)
-    {
-        battlefield[row + 2][(column - 2) + i] = SHIP;
+            if (temp_row >= SIZE || temp_row < 0 || column >= SIZE || column < 0)
+            {
+                printf("Out of battlefield limits.\n");
+                return 1;
+            }
+            if (battlefield[row + r][column] == SHIP)
+            {
+                battlefield[row + r][column] = BUSY;
+            }
+            // Print
+            else
+            {
+                battlefield[row + r][column] = POWER;
+            }
+        }
     }
+    return 0;
 }
 
-void print_cruz(int row, int column)
+int print_diamond(int row, int column)
 {
-    // Linha vertical
-    for(int i = 0; i < 3; i++)
-    {
-        battlefield[(row - 1) + i][column] = SHIP;
-    }
+    for(int r = 0; r < HEIGHT_DIAMOND; r++)
+    {  
+        // Find the middle
+        if (r == HEIGHT_DIAMOND/2)
+        {
+            for(int c = -1; c <= 1; c++)
+            {
+                int temp_row = row + r;
+                int temp_column = column + c;
 
-    // Linha horizontal
-    for(int i = 0; i < 5; i++)
-    {
-        battlefield[row][(column - 2) + i] = SHIP;
-    }
-}
+                if (temp_row >= SIZE || temp_row < 0 || temp_column >= SIZE || temp_column < 0)
+                {
+                    printf("Out of battlefield limits.\n");
+                    return 1;
+                }
+                if (battlefield[temp_row][temp_column] == SHIP)
+                {
+                    battlefield[row + r][column + c] = BUSY;
+                }
+                // Print
+                else
+                {
+                    battlefield[row + r][column + c] = POWER;
+                }
+            }
+        }
+        // If it's not the middle
+        else
+        {   
+            int temp_row = row + r;
 
-void print_octedro(int row, int column)
-{
-    // Linha vertical
-    for(int i = 0; i < 3; i++)
-    {
-        battlefield[(row - 1) + i][column] = SHIP;
+            if (temp_row >= SIZE || temp_row < 0 || column >= SIZE || column < 0)
+            {
+                printf("Out of battlefield limits.\n");
+                return 1;
+            }
+            if (battlefield[row + r][column] == SHIP)
+            {
+                battlefield[row + r][column] = BUSY;
+            }
+            // Print
+            else
+            {
+                battlefield[row + r][column] = POWER;
+            }
+        }
     }
-
-    // Linha horizontal
-    for(int i = 0; i < 3; i++)
-    {
-        battlefield[row][(column - 1) + i] = SHIP;
-    }
+    return 0;
 }
