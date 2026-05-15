@@ -17,7 +17,7 @@ Original repository: [desafio-batalha-naval-sabrigs-3](https://github.com/Cursos
     - Dagger
     - Diamond
 
-## Code Structure
+## Code structure
 
 ```mermaid
 flowchart TD
